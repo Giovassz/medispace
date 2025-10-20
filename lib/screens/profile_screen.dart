@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/auth_service.dart';
 import '../models/user_model.dart';
-import 'login_screen.dart';
+import 'settings_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -14,7 +14,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final AuthService _authService = AuthService();
   UserModel? _currentUser;
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -29,40 +28,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  Future<void> _signOut() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      await _authService.signOut();
-      if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-          (route) => false,
-        );
-      }
-    } catch (e) {
-      _showErrorSnackBar('Error al cerrar sesión: $e');
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  void _showErrorSnackBar(String message) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,11 +65,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               
               // Opciones de cuenta
               _buildAccountOptions(),
-              
-              const SizedBox(height: 24),
-              
-              // Botón de cerrar sesión
-              _buildSignOutButton(),
             ],
           ),
         ),
@@ -281,42 +241,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 16),
           
           _buildOptionTile(
-            Icons.edit,
-            'Editar Perfil',
-            'Actualiza tu información personal',
+            Icons.settings,
+            'Configuración',
+            'Gestiona tu cuenta y preferencias',
             () {
-              // TODO: Implementar edición de perfil
-              _showComingSoonSnackBar();
-            },
-          ),
-          
-          _buildOptionTile(
-            Icons.notifications,
-            'Notificaciones',
-            'Configura tus preferencias de notificación',
-            () {
-              // TODO: Implementar configuración de notificaciones
-              _showComingSoonSnackBar();
-            },
-          ),
-          
-          _buildOptionTile(
-            Icons.security,
-            'Privacidad y Seguridad',
-            'Gestiona tu privacidad y seguridad',
-            () {
-              // TODO: Implementar configuración de privacidad
-              _showComingSoonSnackBar();
-            },
-          ),
-          
-          _buildOptionTile(
-            Icons.help,
-            'Ayuda y Soporte',
-            'Obtén ayuda y soporte técnico',
-            () {
-              // TODO: Implementar ayuda y soporte
-              _showComingSoonSnackBar();
+              // Navegar a la pantalla de configuración
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
+                ),
+              );
             },
           ),
         ],
@@ -324,38 +259,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSignOutButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : _signOut,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFE53E3E),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: _isLoading
-            ? const CircularProgressIndicator(color: Colors.white)
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.logout, color: Colors.white),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Cerrar Sesión',
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-      ),
-    );
-  }
 
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Padding(
@@ -436,12 +339,4 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  void _showComingSoonSnackBar() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Próximamente disponible'),
-        backgroundColor: Color(0xFF667EEA),
-      ),
-    );
-  }
 }

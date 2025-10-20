@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../models/user_model.dart';
 import 'home_screen.dart';
-import 'calendar_screen.dart';
-import 'appointments_screen.dart';
-import 'profile_screen.dart';
+import 'messages_screen.dart';
+import 'settings_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -19,9 +18,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const CalendarScreen(),
-    const AppointmentsScreen(),
-    const ProfileScreen(),
+    const MessagesScreen(),
+    const SettingsScreen(),
   ];
 
   @override
@@ -71,16 +69,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             label: 'Inicio',
           ),
           BottomNavigationBarItem(
-            icon: Icon(_currentIndex == 1 ? Icons.calendar_month : Icons.calendar_month_outlined),
-            label: 'Calendario',
+            icon: Icon(_currentIndex == 1 ? Icons.message : Icons.message_outlined),
+            label: 'Mensajes',
           ),
           BottomNavigationBarItem(
-            icon: Icon(_currentIndex == 2 ? Icons.event_note : Icons.event_note_outlined),
-            label: _currentUser!.role == 'doctor' ? 'Mis Citas' : 'Mis Citas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(_currentIndex == 3 ? Icons.person : Icons.person_outline),
-            label: 'Perfil',
+            icon: Icon(_currentIndex == 2 ? Icons.settings : Icons.settings_outlined),
+            label: 'Configuración',
           ),
         ],
       ),

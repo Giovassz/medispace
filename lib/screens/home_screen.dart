@@ -136,6 +136,19 @@ class _HomeScreenState extends State<HomeScreen> {
         
         const SizedBox(height: 16),
         
+        // Widget de consejos médicos
+        _buildServiceCard(
+          title: 'Consejos Médicos',
+          subtitle: 'Consejos para aliviar dolores leves',
+          icon: Icons.healing_outlined,
+          color: const Color(0xFF48BB78),
+          onTap: () {
+            _showMedicalTipsDialog();
+          },
+        ),
+        
+        const SizedBox(height: 16),
+        
         // Especialidades médicas
         Text(
           'Especialidades',
@@ -372,6 +385,154 @@ class _HomeScreenState extends State<HomeScreen> {
             style: GoogleFonts.poppins(
               fontSize: 12,
               color: const Color(0xFF718096),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showMedicalTipsDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.healing,
+                color: const Color(0xFF48BB78),
+                size: 28,
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'Consejos Médicos',
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF2D3748),
+                ),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildTipCard(
+                  'Dolor de Cabeza',
+                  '• Aplica compresas frías en la frente\n• Bebe agua suficiente\n• Descansa en un ambiente oscuro\n• Evita el estrés y la cafeína',
+                  Icons.psychology,
+                ),
+                _buildTipCard(
+                  'Dolor de Garganta',
+                  '• Haz gárgaras con agua salada tibia\n• Bebe líquidos calientes\n• Usa un humidificador\n• Evita fumar y el aire seco',
+                  Icons.healing,
+                ),
+                _buildTipCard(
+                  'Dolor Muscular',
+                  '• Aplica hielo por 15-20 minutos\n• Estira suavemente el músculo\n• Toma un baño caliente\n• Masajea el área afectada',
+                  Icons.fitness_center,
+                ),
+                _buildTipCard(
+                  'Malestar Estomacal',
+                  '• Bebe té de manzanilla\n• Evita alimentos grasos\n• Come porciones pequeñas\n• Mantén una dieta blanda',
+                  Icons.restaurant,
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE53E3E).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: const Color(0xFFE53E3E).withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.warning,
+                        color: const Color(0xFFE53E3E),
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Si los síntomas persisten o empeoran, consulta a un médico inmediatamente.',
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            color: const Color(0xFFE53E3E),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cerrar',
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF667EEA),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildTipCard(String title, String content, IconData icon) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7FAFC),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: const Color(0xFFE2E8F0),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                icon,
+                color: const Color(0xFF48BB78),
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF2D3748),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            content,
+            style: GoogleFonts.poppins(
+              fontSize: 12,
+              color: const Color(0xFF4A5568),
+              height: 1.4,
             ),
           ),
         ],

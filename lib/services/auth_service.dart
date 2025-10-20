@@ -135,6 +135,18 @@ class AuthService {
     }
   }
 
+  // Actualizar perfil de usuario
+  Future<void> updateUserProfile(UserModel user) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .update(user.toMap());
+    } catch (e) {
+      throw 'Error al actualizar perfil: $e';
+    }
+  }
+
   // Cerrar sesión
   Future<void> signOut() async {
     try {

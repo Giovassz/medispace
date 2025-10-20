@@ -1,194 +1,313 @@
-# 🏥 MediSpace - Sistema de Gestión Médica
+# 🏥 MediSpace - Aplicación de Citas Médicas
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter" />
-  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
-  <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android" />
-  <img src="https://img.shields.io/badge/Web-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Web" />
-</div>
+## 📱 Descripción del Proyecto
 
-<br>
+MediSpace es una aplicación móvil desarrollada en Flutter que permite a los usuarios gestionar citas médicas de manera eficiente y segura. La aplicación conecta pacientes con profesionales médicos, facilitando el agendamiento de consultas y proporcionando herramientas de comunicación y gestión de información médica.
 
-> **MediSpace** es una aplicación móvil y web desarrollada en Flutter que facilita la gestión de citas médicas, proporcionando una interfaz moderna e intuitiva para pacientes y profesionales de la salud.
+## ✨ Características Principales
 
-## 📱 Características Principales
-
-### 🔐 Autenticación Segura
-- **Login/Registro** con email y contraseña
+### 🔐 Autenticación y Seguridad
+- **Login/Registro** con Firebase Authentication
 - **Recuperación de contraseña** por email
-- **Validación en tiempo real** de formularios
-- **Integración con Firebase Authentication**
+- **Validación de datos** en tiempo real
+- **Protección de información médica** con cifrado
 
-### 📅 Gestión de Citas
-- **Calendario interactivo** para visualizar citas
-- **Reserva de citas** por especialidad médica
-- **Lista de citas** con estado y detalles
-- **Sistema de notificaciones**
+### 👥 Gestión de Usuarios
+- **Dos tipos de usuario:** Pacientes y Doctores
+- **Perfil personalizable** con información médica
+- **Edición de datos** (nombre, edad, lugar de nacimiento, padecimientos)
+- **Información profesional** para doctores (especialidad, licencia)
 
-### 🩺 Especialidades Médicas
-- **Cardiología** - Enfermedades del corazón
-- **Dermatología** - Cuidado de la piel
-- **Neurología** - Sistema nervioso
-- **Pediatría** - Medicina infantil
-- **Ginecología** - Salud femenina
-- **Traumatología** - Lesiones óseas y musculares
+### 📅 Sistema de Citas
+- **Agendamiento de citas** en tiempo real
+- **Calendario visual** con TableCalendar
+- **Verificación de disponibilidad** automática
+- **Gestión de estados** (Programada, Confirmada, Completada, Cancelada)
+- **Recordatorios** y notificaciones
 
-### 👤 Perfil de Usuario
-- **Gestión de datos personales**
-- **Historial de citas**
-- **Configuración de cuenta**
-- **Cerrar sesión seguro**
+### 🏥 Especialidades Médicas
+- **8 especialidades** disponibles:
+  - Medicina General
+  - Cardiología
+  - Dermatología
+  - Pediatría
+  - Ginecología
+  - Ortopedia
+  - Neurología
+  - Oftalmología
 
-## 🚀 Tecnologías Utilizadas
+### 💬 Comunicación
+- **Sistema de mensajes** entre pacientes y doctores
+- **Interfaz de chat** moderna y intuitiva
+- **Notificaciones** de mensajes no leídos
 
-<table>
-<tr>
-<td align="center" width="50%">
+### 🩺 Consejos Médicos
+- **Widget de consejos** para aliviar dolores leves
+- **Información médica** básica y confiable
+- **Advertencias** para consultar médico cuando sea necesario
+
+## 🛠️ Tecnologías Utilizadas
 
 ### Frontend
-- **Flutter 3.9.2+** - Framework de desarrollo
-- **Material Design** - Sistema de diseño
-- **Google Fonts** - Tipografías personalizadas
-- **Responsive Design** - Adaptable a diferentes pantallas
+- **Flutter** 3.x
+- **Dart** 3.x
+- **Material Design 3**
+- **Google Fonts** (Poppins)
 
-</td>
-<td align="center" width="50%">
+### Backend y Servicios
+- **Firebase Authentication**
+- **Cloud Firestore**
+- **Firebase Core**
 
-### Backend & Servicios
-- **Firebase Core** - Plataforma de desarrollo
-- **Firebase Auth** - Autenticación de usuarios
-- **Cloud Firestore** - Base de datos NoSQL
-- **Provider** - Gestión de estado
+### Dependencias Principales
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.15.3
+  cloud_firestore: ^4.13.6
+  google_fonts: ^6.1.0
+  table_calendar: ^3.0.9
+  intl: ^0.19.0
+```
 
-</td>
-</tr>
-</table>
+## 📱 Pantallas Implementadas
 
-## 📋 Requisitos del Sistema
+### 1. 🔐 Pantalla de Login
+- Formulario de autenticación
+- Validación de email y contraseña
+- Navegación a registro y recuperación de contraseña
+- Diseño moderno con gradientes
 
-### Desarrollo
-- **Flutter SDK** 3.9.2 o superior
-- **Dart SDK** 3.0 o superior
-- **Android Studio** / **VS Code**
-- **Git** para control de versiones
+### 2. 🏠 Pantalla Principal (Home)
+- Mensaje de bienvenida personalizado
+- Widget "Agendar Cita"
+- Widget "Consejos Médicos"
+- Lista de especialidades médicas
+- Contenido diferenciado por rol de usuario
 
-### Plataformas Soportadas
-- ✅ **Android** (API 21+)
-- ✅ **Web** (Chrome, Firefox, Safari)
-- ✅ **iOS** (configuración disponible)
-- ✅ **Windows** (configuración disponible)
+### 3. 💬 Pantalla de Mensajes
+- Lista de conversaciones con doctores
+- Avatares personalizados
+- Timestamps relativos
+- Indicadores de mensajes no leídos
 
-## 🛠️ Instalación y Configuración
+### 4. ⚙️ Pantalla de Configuración
+- Información del usuario
+- Acceso a edición de perfil
+- Configuración de privacidad
+- Información sobre la aplicación
+- Botón de cerrar sesión
 
-### 1. Clonar el Repositorio
+### 5. 👤 Pantalla de Edición de Perfil
+- Formulario completo de datos personales
+- Campos: nombre, teléfono, edad, lugar de nacimiento
+- Campo de padecimientos médicos
+- Validaciones y actualización en Firebase
+
+### 6. 🔒 Pantalla de Privacidad
+- Información detallada sobre protección de datos
+- Políticas de uso de información
+- Derechos del usuario
+- Información de contacto
+
+### 7. ℹ️ Pantalla "Sobre Nosotros"
+- Información de la aplicación
+- Misión, visión y valores
+- Características principales
+- Información de contacto
+
+### 8. 📅 Pantalla de Calendario
+- Vista de calendario mensual
+- Citas del día seleccionado
+- Estados de citas con colores
+- Integración con Firebase
+
+### 9. 📋 Pantalla de Citas
+- Lista de citas del usuario
+- Filtros por estado
+- Gestión de citas (confirmar, completar, cancelar)
+- Información detallada de cada cita
+
+### 10. 📝 Pantalla de Agendamiento
+- Selección de especialidad
+- Selección de doctor
+- Selección de fecha y hora
+- Campos opcionales (motivo, notas)
+- Verificación de disponibilidad
+
+## 🗂️ Estructura del Proyecto
+
+```
+lib/
+├── main.dart                 # Punto de entrada de la aplicación
+├── firebase_options.dart     # Configuración de Firebase
+├── models/                   # Modelos de datos
+│   ├── user_model.dart
+│   ├── appointment_model.dart
+│   └── specialty_model.dart
+├── screens/                  # Pantallas de la aplicación
+│   ├── login_screen.dart
+│   ├── register_screen.dart
+│   ├── forgot_password_screen.dart
+│   ├── home_screen.dart
+│   ├── messages_screen.dart
+│   ├── settings_screen.dart
+│   ├── edit_profile_screen.dart
+│   ├── privacy_screen.dart
+│   ├── about_screen.dart
+│   ├── calendar_screen.dart
+│   ├── appointments_screen.dart
+│   ├── book_appointment_screen.dart
+│   └── main_navigation_screen.dart
+├── services/                 # Servicios de la aplicación
+│   ├── auth_service.dart
+│   └── appointment_service.dart
+└── widgets/                  # Widgets reutilizables
+    ├── custom_button.dart
+    └── custom_text_field.dart
+```
+
+## 🚀 Instalación y Configuración
+
+### Prerrequisitos
+- Flutter SDK 3.x o superior
+- Dart 3.x o superior
+- Android Studio / VS Code
+- Cuenta de Firebase
+
+### Pasos de Instalación
+
+1. **Clonar el repositorio**
 ```bash
 git clone https://github.com/tu-usuario/medispace.git
 cd medispace
 ```
 
-### 2. Instalar Dependencias
+2. **Instalar dependencias**
 ```bash
 flutter pub get
 ```
 
-### 3. Configurar Firebase
-1. Crear proyecto en [Firebase Console](https://console.firebase.google.com/)
-2. Habilitar **Authentication** con Email/Password
-3. Configurar **Cloud Firestore**
-4. Descargar `google-services.json` (Android) y `GoogleService-Info.plist` (iOS)
-5. Reemplazar archivos en las carpetas correspondientes
+3. **Configurar Firebase**
+   - Crear proyecto en Firebase Console
+   - Habilitar Authentication y Firestore
+   - Descargar `google-services.json` (Android)
+   - Configurar `firebase_options.dart`
 
-### 4. Configurar Firebase Options
-```bash
-# Generar configuración automática
-flutterfire configure
-```
-
-### 5. Ejecutar la Aplicación
-
-#### En Web (Chrome)
-```bash
-flutter run -d chrome
-```
-
-#### En Android
+4. **Ejecutar la aplicación**
 ```bash
 flutter run
 ```
 
-#### En iOS (macOS)
-```bash
-flutter run -d ios
+## 🔧 Configuración de Firebase
+
+### Authentication
+- Habilitar Email/Password
+- Configurar reglas de seguridad
+
+### Firestore Database
+- Crear colecciones:
+  - `users` - Información de usuarios
+  - `appointments` - Citas médicas
+  - `doctor_availability` - Disponibilidad de doctores
+
+### Reglas de Seguridad Firestore
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /appointments/{appointmentId} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
 ```
 
-## 📱 Capturas de Pantalla
+## 📊 Funcionalidades por Rol
 
-<div align="center">
+### 👨‍⚕️ Doctor
+- Ver citas programadas
+- Confirmar/cancelar citas
+- Gestionar disponibilidad
+- Comunicarse con pacientes
+- Ver información profesional
 
-| Login | Registro | Dashboard |
-|-------|----------|-----------|
-| ![Login](docs/screenshots/login.png) | ![Registro](docs/screenshots/register.png) | ![Dashboard](docs/screenshots/dashboard.png) |
+### 👤 Paciente
+- Agendar citas médicas
+- Ver historial de citas
+- Recibir consejos médicos
+- Comunicarse con doctores
+- Gestionar perfil personal
 
-| Citas | Perfil | Calendario |
-|-------|--------|------------|
-| ![Citas](docs/screenshots/appointments.png) | ![Perfil](docs/screenshots/profile.png) | ![Calendario](docs/screenshots/calendar.png) |
+## 🎨 Diseño y UX
 
-</div>
+### Paleta de Colores
+- **Primario:** #667EEA (Azul)
+- **Secundario:** #764BA2 (Púrpura)
+- **Éxito:** #48BB78 (Verde)
+- **Advertencia:** #F6AD55 (Naranja)
+- **Error:** #E53E3E (Rojo)
+- **Neutro:** #718096 (Gris)
 
-## 🏗️ Arquitectura del Proyecto
+### Tipografía
+- **Fuente Principal:** Poppins (Google Fonts)
+- **Tamaños:** 12px - 32px
+- **Pesos:** 400, 500, 600, 700
 
-```
-lib/
-├── 📁 models/              # Modelos de datos
-│   ├── user_model.dart
-│   ├── appointment_model.dart
-│   └── specialty_model.dart
-├── 📁 screens/             # Pantallas de la aplicación
-│   ├── login_screen.dart
-│   ├── register_screen.dart
-│   ├── home_screen.dart
-│   ├── appointments_screen.dart
-│   ├── book_appointment_screen.dart
-│   ├── calendar_screen.dart
-│   ├── profile_screen.dart
-│   └── forgot_password_screen.dart
-├── 📁 services/            # Servicios y lógica de negocio
-│   ├── auth_service.dart
-│   └── appointment_service.dart
-├── 📁 widgets/             # Widgets reutilizables
-│   ├── custom_button.dart
-│   └── custom_text_field.dart
-├── firebase_options.dart   # Configuración de Firebase
-└── main.dart              # Punto de entrada
-```
+### Componentes
+- **Botones:** Redondeados con gradientes
+- **Tarjetas:** Sombras suaves y bordes redondeados
+- **Formularios:** Validación en tiempo real
+- **Navegación:** Bottom Navigation Bar
 
-## 🧪 Pruebas
+## 🔒 Seguridad y Privacidad
 
-### Ejecutar Tests
+### Protección de Datos
+- Cifrado de extremo a extremo
+- Autenticación segura con Firebase
+- Validación de datos en cliente y servidor
+- Cumplimiento con normativas de salud
+
+### Permisos
+- Acceso a cámara (futuro)
+- Notificaciones push
+- Almacenamiento local
+
+## 🧪 Testing
+
+### Pruebas Implementadas
+- Pruebas unitarias básicas
+- Validación de formularios
+- Pruebas de navegación
+- Pruebas de integración con Firebase
+
+### Ejecutar Pruebas
 ```bash
 flutter test
 ```
 
-### Pruebas de Integración
-```bash
-flutter drive --target=test_driver/app.dart
-```
+## 📱 Compatibilidad
 
-## 📦 Build y Deployment
+### Plataformas Soportadas
+- **Android:** API 21+ (Android 5.0+)
+- **iOS:** iOS 11.0+
+- **Web:** Navegadores modernos
 
-### Android APK
+### Dispositivos
+- Teléfonos inteligentes
+- Tablets
+- Escritorio (futuro)
+
+## 🚀 Despliegue
+
+### Android
 ```bash
 flutter build apk --release
-```
-
-### Android App Bundle (AAB)
-```bash
-flutter build appbundle --release
-```
-
-### Web
-```bash
-flutter build web --release
 ```
 
 ### iOS
@@ -196,49 +315,82 @@ flutter build web --release
 flutter build ios --release
 ```
 
-## 🤝 Contribuir
+### Web
+```bash
+flutter build web
+```
 
-¡Las contribuciones son bienvenidas! Para contribuir:
+## 📈 Roadmap Futuro
 
-1. **Fork** el proyecto
-2. **Crea** una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** a la rama (`git push origin feature/AmazingFeature`)
-5. **Abre** un Pull Request
+### Versión 2.0
+- [ ] Notificaciones push
+- [ ] Videollamadas integradas
+- [ ] Historial médico completo
+- [ ] Prescripciones digitales
+- [ ] Integración con laboratorios
 
-### Guías de Contribución
-- Sigue las convenciones de código de Flutter
-- Añade tests para nuevas funcionalidades
-- Actualiza la documentación cuando sea necesario
-- Usa commits descriptivos
+### Versión 3.0
+- [ ] IA para diagnóstico básico
+- [ ] Telemedicina avanzada
+- [ ] Integración con wearables
+- [ ] Análisis de datos de salud
 
-## 📄 Licencia
+## 👥 Contribución
 
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
+### Cómo Contribuir
+1. Fork del proyecto
+2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit cambios (`git commit -m 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Crear Pull Request
 
-## 👥 Autores
-
-- **Tu Nombre** - *Desarrollo inicial* - [@tu-github](https://github.com/tu-github)
-
-## 🙏 Agradecimientos
-
-- **Flutter Team** por el increíble framework
-- **Firebase Team** por los servicios backend
-- **Comunidad Flutter** por el apoyo y recursos
+### Estándares de Código
+- Seguir convenciones de Dart/Flutter
+- Documentar funciones complejas
+- Escribir pruebas para nuevas funcionalidades
+- Mantener coherencia en el diseño
 
 ## 📞 Soporte
 
-Si tienes preguntas o necesitas ayuda:
+### Contacto
+- **Email:** soporte@medispace.com
+- **Teléfono:** +1 (555) 123-4567
+- **GitHub Issues:** [Reportar problemas](https://github.com/tu-usuario/medispace/issues)
 
-- 📧 **Email**: tu-email@ejemplo.com
-- 🐛 **Issues**: [GitHub Issues](https://github.com/tu-usuario/medispace/issues)
-- 💬 **Discusiones**: [GitHub Discussions](https://github.com/tu-usuario/medispace/discussions)
+### Documentación
+- [Documentación Flutter](https://docs.flutter.dev)
+- [Firebase Docs](https://firebase.google.com/docs)
+- [Material Design](https://material.io/design)
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 🙏 Agradecimientos
+
+- Equipo de Flutter por el framework
+- Google por Firebase
+- Comunidad de desarrolladores Flutter
+- Profesores y compañeros de clase
 
 ---
 
-<div align="center">
-  <p>Hecho con ❤️ usando Flutter</p>
-  <p>
-    <a href="#-medispace---sistema-de-gestión-médica">⬆️ Volver arriba</a>
-  </p>
-</div>
+## 📸 Capturas de Pantalla
+
+### Pantalla de Login
+![Login Screen](screenshots/login.png)
+
+### Pantalla Principal
+![Home Screen](screenshots/home.png)
+
+### Pantalla de Mensajes
+![Messages Screen](screenshots/messages.png)
+
+### Pantalla de Configuración
+![Settings Screen](screenshots/settings.png)
+
+---
+
+**Desarrollado con ❤️ para mejorar el acceso a la atención médica**
+
+*Última actualización: Diciembre 2024*

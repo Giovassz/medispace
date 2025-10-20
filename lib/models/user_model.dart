@@ -7,6 +7,9 @@ class UserModel {
   final String? specialty; // Solo para doctores
   final String? licenseNumber; // Solo para doctores
   final String? profileImageUrl;
+  final int? age; // Edad del usuario
+  final String? birthPlace; // Lugar de nacimiento
+  final String? medicalConditions; // Padecimientos médicos
   final DateTime createdAt;
 
   UserModel({
@@ -18,6 +21,9 @@ class UserModel {
     this.specialty,
     this.licenseNumber,
     this.profileImageUrl,
+    this.age,
+    this.birthPlace,
+    this.medicalConditions,
     required this.createdAt,
   });
 
@@ -31,6 +37,9 @@ class UserModel {
       specialty: map['specialty'],
       licenseNumber: map['licenseNumber'],
       profileImageUrl: map['profileImageUrl'],
+      age: map['age'],
+      birthPlace: map['birthPlace'],
+      medicalConditions: map['medicalConditions'],
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] ?? 0),
     );
   }
@@ -45,6 +54,9 @@ class UserModel {
       'specialty': specialty,
       'licenseNumber': licenseNumber,
       'profileImageUrl': profileImageUrl,
+      'age': age,
+      'birthPlace': birthPlace,
+      'medicalConditions': medicalConditions,
       'createdAt': createdAt.millisecondsSinceEpoch,
     };
   }
@@ -58,6 +70,9 @@ class UserModel {
     String? specialty,
     String? licenseNumber,
     String? profileImageUrl,
+    int? age,
+    String? birthPlace,
+    String? medicalConditions,
     DateTime? createdAt,
   }) {
     return UserModel(
@@ -69,6 +84,9 @@ class UserModel {
       specialty: specialty ?? this.specialty,
       licenseNumber: licenseNumber ?? this.licenseNumber,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
+      age: age ?? this.age,
+      birthPlace: birthPlace ?? this.birthPlace,
+      medicalConditions: medicalConditions ?? this.medicalConditions,
       createdAt: createdAt ?? this.createdAt,
     );
   }
