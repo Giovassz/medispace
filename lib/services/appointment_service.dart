@@ -72,6 +72,48 @@ class AppointmentService {
     }
   }
 
+  // Actualizar cita completa
+  Future<void> updateAppointment(String appointmentId, AppointmentModel updatedAppointment) async {
+    try {
+      // Verificar disponibilidad si se cambió la fecha/hora
+      final isAvailable = await isTimeSlotAvailable(
+        updatedAppointment.doctorId,
+        updatedAppointment.dateTime,
+      );
+
+      if (!isAvailable) {
+        throw 'Este horario no está disponible';
+      }
+
+      await _firestore
+          .collection('appointments')
+          .doc(appointmentId)
+          .update({
+            'doctorId': updatedAppointment.doctorId,
+            'doctorName': updatedAppointment.doctorName,
+            'doctorSpecialty': updatedAppointment.doctorSpecialty,
+            'dateTime': Timestamp.fromDate(updatedAppointment.dateTime),
+            'reason': updatedAppointment.reason,
+            'notes': updatedAppointment.notes,
+            'updatedAt': Timestamp.fromDate(DateTime.now()),
+          });
+    } catch (e) {
+      throw 'Error al actualizar cita: $e';
+    }
+  }
+
+  // Eliminar cita con confirmación
+  Future<void> deleteAppointment(String appointmentId) async {
+    try {
+      await _firestore
+          .collection('appointments')
+          .doc(appointmentId)
+          .delete();
+    } catch (e) {
+      throw 'Error al eliminar cita: $e';
+    }
+  }
+
   // Cancelar una cita
   Future<void> cancelAppointment(String appointmentId) async {
     try {

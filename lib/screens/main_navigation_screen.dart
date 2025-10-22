@@ -4,6 +4,9 @@ import '../models/user_model.dart';
 import 'home_screen.dart';
 import 'messages_screen.dart';
 import 'settings_screen.dart';
+import 'appointments_screen.dart';
+import 'calendar_screen.dart';
+import 'doctor_availability_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -16,11 +19,80 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
   UserModel? _currentUser;
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const MessagesScreen(),
-    const SettingsScreen(),
-  ];
+  List<Widget> get _screens {
+    if (_currentUser?.role == 'doctor') {
+      return [
+        const HomeScreen(),
+        const AppointmentsScreen(),
+        const CalendarScreen(),
+        const DoctorAvailabilityScreen(),
+        const MessagesScreen(),
+        const SettingsScreen(),
+      ];
+    } else {
+      return [
+        const HomeScreen(),
+        const AppointmentsScreen(),
+        const CalendarScreen(),
+        const MessagesScreen(),
+        const SettingsScreen(),
+      ];
+    }
+  }
+
+  List<BottomNavigationBarItem> get _bottomNavItems {
+    if (_currentUser?.role == 'doctor') {
+      return [
+        BottomNavigationBarItem(
+          icon: Icon(_currentIndex == 0 ? Icons.home : Icons.home_outlined),
+          label: 'Inicio',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(_currentIndex == 1 ? Icons.event : Icons.event_outlined),
+          label: 'Citas',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(_currentIndex == 2 ? Icons.calendar_month : Icons.calendar_month_outlined),
+          label: 'Calendario',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(_currentIndex == 3 ? Icons.schedule : Icons.schedule_outlined),
+          label: 'Disponibilidad',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(_currentIndex == 4 ? Icons.message : Icons.message_outlined),
+          label: 'Mensajes',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(_currentIndex == 5 ? Icons.settings : Icons.settings_outlined),
+          label: 'Configuración',
+        ),
+      ];
+    } else {
+      return [
+        BottomNavigationBarItem(
+          icon: Icon(_currentIndex == 0 ? Icons.home : Icons.home_outlined),
+          label: 'Inicio',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(_currentIndex == 1 ? Icons.event : Icons.event_outlined),
+          label: 'Citas',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(_currentIndex == 2 ? Icons.calendar_month : Icons.calendar_month_outlined),
+          label: 'Calendario',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(_currentIndex == 3 ? Icons.message : Icons.message_outlined),
+          label: 'Mensajes',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(_currentIndex == 4 ? Icons.settings : Icons.settings_outlined),
+          label: 'Configuración',
+        ),
+      ];
+    }
+  }
 
   @override
   void initState() {
@@ -63,20 +135,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         unselectedItemColor: const Color(0xFF718096),
         backgroundColor: Colors.white,
         elevation: 8,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(_currentIndex == 0 ? Icons.home : Icons.home_outlined),
-            label: 'Inicio',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(_currentIndex == 1 ? Icons.message : Icons.message_outlined),
-            label: 'Mensajes',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(_currentIndex == 2 ? Icons.settings : Icons.settings_outlined),
-            label: 'Configuración',
-          ),
-        ],
+        items: _bottomNavItems,
       ),
     );
   }

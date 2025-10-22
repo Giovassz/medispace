@@ -5,6 +5,7 @@ import '../services/auth_service.dart';
 import '../services/appointment_service.dart';
 import '../models/appointment_model.dart';
 import '../models/user_model.dart';
+import 'edit_appointment_screen.dart';
 
 class AppointmentsScreen extends StatefulWidget {
   const AppointmentsScreen({super.key});
@@ -79,12 +80,56 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
   }
 
   Future<void> _cancelAppointment(String appointmentId) async {
-    try {
-      await _appointmentService.cancelAppointment(appointmentId);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Confirmar cancelación',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          '¿Estás seguro de que deseas cancelar esta cita?',
+          style: GoogleFonts.poppins(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              'No',
+              style: GoogleFonts.poppins(color: Colors.grey),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              'Sí, cancelar',
+              style: GoogleFonts.poppins(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        await _appointmentService.cancelAppointment(appointmentId);
+        _loadAppointments();
+        _showSuccessSnackBar('Cita cancelada');
+      } catch (e) {
+        _showErrorSnackBar('Error al cancelar cita: $e');
+      }
+    }
+  }
+
+  Future<void> _editAppointment(AppointmentModel appointment) async {
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (context) => EditAppointmentScreen(appointment: appointment),
+      ),
+    );
+    
+    if (result == true) {
       _loadAppointments();
-      _showSuccessSnackBar('Cita cancelada');
-    } catch (e) {
-      _showErrorSnackBar('Error al cancelar cita: $e');
     }
   }
 
@@ -436,6 +481,55 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                   ),
                 ],
               ),
+            ),
+          ],
+          
+          // Acciones para pacientes
+          if (_currentUser!.role == 'patient' && appointment.status != 'cancelled' && appointment.status != 'completed') ...[
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _editAppointment(appointment),
+                    icon: const Icon(Icons.edit, size: 16),
+                    label: Text(
+                      'Editar',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Color(0xFF667EEA)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _cancelAppointment(appointment.id),
+                    icon: const Icon(Icons.cancel, size: 16),
+                    label: Text(
+                      'Cancelar',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFFE53E3E),
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Color(0xFFE53E3E)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
           
