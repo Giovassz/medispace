@@ -15,7 +15,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final AuthService _authService = AuthService();
   UserModel? _currentUser;
-  final List<SpecialtyModel> _specialties = SpecialtyModel.getDefaultSpecialties();
+  final List<SpecialtyModel> _specialties =
+      SpecialtyModel.getDefaultSpecialties();
 
   @override
   void initState() {
@@ -33,11 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (_currentUser == null) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -50,9 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               // Header con saludo personalizado
               _buildHeader(),
-              
+
               const SizedBox(height: 24),
-              
+
               // Contenido según el rol
               if (_currentUser!.role == 'patient') ...[
                 _buildPatientContent(),
@@ -90,13 +87,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            _currentUser!.role == 'doctor' 
+            _currentUser!.role == 'doctor'
                 ? 'Gestiona tus citas médicas'
                 : '¿Cómo podemos ayudarte hoy?',
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: Colors.white70,
-            ),
+            style: GoogleFonts.poppins(fontSize: 16, color: Colors.white70),
           ),
         ],
       ),
@@ -115,9 +109,9 @@ class _HomeScreenState extends State<HomeScreen> {
             color: const Color(0xFF2D3748),
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Botón para agendar cita
         _buildServiceCard(
           title: 'Agendar Cita',
@@ -133,9 +127,9 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Widget de consejos médicos
         _buildServiceCard(
           title: 'Consejos Médicos',
@@ -146,10 +140,10 @@ class _HomeScreenState extends State<HomeScreen> {
             _showMedicalTipsDialog();
           },
         ),
-        
+
         const SizedBox(height: 16),
-        
-        // Especialidades médicas
+
+        // Panel de especialidades
         Text(
           'Especialidades',
           style: GoogleFonts.poppins(
@@ -158,17 +152,18 @@ class _HomeScreenState extends State<HomeScreen> {
             color: const Color(0xFF2D3748),
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
+        // Grid de especialidades - todas visibles
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
+            crossAxisCount: 3,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            childAspectRatio: 1.2,
+            childAspectRatio: 0.85,
           ),
           itemCount: _specialties.length,
           itemBuilder: (context, index) {
@@ -192,9 +187,9 @@ class _HomeScreenState extends State<HomeScreen> {
             color: const Color(0xFF2D3748),
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Estadísticas rápidas
         Row(
           children: [
@@ -217,9 +212,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Acciones rápidas
         _buildServiceCard(
           title: 'Ver Mis Citas',
@@ -302,45 +297,81 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSpecialtyCard(SpecialtyModel specialty) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BookAppointmentScreen(selectedSpecialty: specialty.id),
-          ),
-        );
-      },
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
+    // Colores alternados para cada especialidad
+    final colors = [
+      [const Color(0xFF667EEA), const Color(0xFF764BA2)],
+      [const Color(0xFF48BB78), const Color(0xFF38A169)],
+      [const Color(0xFFED8936), const Color(0xFFDD6B20)],
+      [const Color(0xFF9F7AEA), const Color(0xFF805AD5)],
+      [const Color(0xFFF56565), const Color(0xFFE53E3E)],
+      [const Color(0xFF4299E1), const Color(0xFF3182CE)],
+      [const Color(0xFFE4726B), const Color(0xFFD53F8C)],
+    ];
+    final colorPair = colors[_specialties.indexOf(specialty) % colors.length];
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            colorPair[0].withValues(alpha: 0.12),
+            colorPair[1].withValues(alpha: 0.08),
           ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorPair[0].withValues(alpha: 0.3),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: colorPair[0].withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              _getSpecialtyIcon(specialty.icon),
-              size: 32,
-              color: const Color(0xFF667EEA),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [colorPair[0], colorPair[1]],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: colorPair[0].withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Icon(
+                _getSpecialtyIcon(specialty.icon),
+                size: 32,
+                color: Colors.white,
+              ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(
               specialty.name,
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF2D3748),
+                letterSpacing: 0.3,
               ),
               textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -402,11 +433,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           title: Row(
             children: [
-              Icon(
-                Icons.healing,
-                color: const Color(0xFF48BB78),
-                size: 28,
-              ),
+              Icon(Icons.healing, color: const Color(0xFF48BB78), size: 28),
               const SizedBox(width: 12),
               Text(
                 'Consejos Médicos',
@@ -501,20 +528,14 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFFF7FAFC),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: const Color(0xFFE2E8F0),
-        ),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(
-                icon,
-                color: const Color(0xFF48BB78),
-                size: 20,
-              ),
+              Icon(icon, color: const Color(0xFF48BB78), size: 20),
               const SizedBox(width: 8),
               Text(
                 title,

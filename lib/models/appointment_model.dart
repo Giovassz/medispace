@@ -32,6 +32,14 @@ class AppointmentModel {
   });
 
   factory AppointmentModel.fromMap(Map<String, dynamic> map) {
+    // Helper para convertir Timestamp a DateTime de forma segura
+    DateTime _parseTimestamp(dynamic timestamp) {
+      if (timestamp == null) return DateTime.now();
+      if (timestamp is Timestamp) return timestamp.toDate();
+      if (timestamp is DateTime) return timestamp;
+      return DateTime.now();
+    }
+
     return AppointmentModel(
       id: map['id'] ?? '',
       patientId: map['patientId'] ?? '',
@@ -40,12 +48,12 @@ class AppointmentModel {
       doctorId: map['doctorId'] ?? '',
       doctorName: map['doctorName'] ?? '',
       doctorSpecialty: map['doctorSpecialty'] ?? '',
-      dateTime: (map['dateTime'] as Timestamp).toDate(),
+      dateTime: _parseTimestamp(map['dateTime']),
       status: map['status'] ?? 'scheduled',
       notes: map['notes'],
       reason: map['reason'],
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
-      updatedAt: (map['updatedAt'] as Timestamp).toDate(),
+      createdAt: _parseTimestamp(map['createdAt']),
+      updatedAt: _parseTimestamp(map['updatedAt']),
     );
   }
 

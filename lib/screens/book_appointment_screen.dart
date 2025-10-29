@@ -39,17 +39,39 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
 
   Future<void> _loadDoctors() async {
     try {
+      setState(() {
+        _isLoading = true;
+      });
+      
       List<UserModel> doctors;
       if (_selectedSpecialty != null) {
         doctors = await _authService.getDoctorsBySpecialty(_selectedSpecialty!);
       } else {
         doctors = await _authService.getDoctors();
       }
+      
+      // Debug: imprimir información
+      print('📋 Total de doctores cargados: ${doctors.length}');
+      if (_selectedSpecialty != null) {
+        print('🔍 Especialidad filtrada: $_selectedSpecialty');
+      }
+      for (var doctor in doctors) {
+        print('👨‍⚕️ Doctor: ${doctor.name} - ${doctor.specialty}');
+      }
+      
       setState(() {
         _doctors = doctors;
+        _isLoading = false;
       });
     } catch (e) {
-      _showErrorSnackBar('Error al cargar doctores: $e');
+      print('❌ Error al cargar doctores: $e');
+      setState(() {
+        _isLoading = false;
+        _doctors = []; // Asegurar que la lista esté vacía en caso de error
+      });
+      if (mounted) {
+        _showErrorSnackBar('Error al cargar doctores: $e');
+      }
     }
   }
 
@@ -285,6 +307,51 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   }
 
   Widget _buildDoctorDropdown() {
+    if (_isLoading) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'Cargando doctores...',
+              style: GoogleFonts.poppins(
+                color: const Color(0xFF718096),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    
+    if (_doctors.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: Text(
+          'No hay doctores disponibles',
+          style: GoogleFonts.poppins(
+            color: const Color(0xFF718096),
+          ),
+        ),
+      );
+    }
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(

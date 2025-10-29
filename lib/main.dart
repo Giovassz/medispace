@@ -5,12 +5,20 @@ import 'firebase_options.dart';
 import 'screens/login_screen.dart';
 import 'screens/main_navigation_screen.dart';
 import 'services/auth_service.dart';
+import 'services/appointment_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Crear perfiles de doctores por defecto
+  final authService = AuthService();
+  await authService.createDefaultDoctors();
+
+  // Crear citas de ejemplo
+  final appointmentService = AppointmentService();
+  await appointmentService.createSampleAppointments();
+
   runApp(const MediSpaceApp());
 }
 
@@ -38,7 +46,7 @@ class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthService authService = AuthService();
-    
+
     return StreamBuilder(
       stream: authService.authStateChanges,
       builder: (context, snapshot) {
@@ -52,12 +60,12 @@ class AuthWrapper extends StatelessWidget {
             ),
           );
         }
-        
+
         // Si el usuario está autenticado, mostrar MainNavigationScreen
         if (snapshot.hasData && snapshot.data != null) {
           return const MainNavigationScreen();
         }
-        
+
         // Si no está autenticado, mostrar LoginScreen
         return const LoginScreen();
       },

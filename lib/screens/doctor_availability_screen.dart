@@ -2,29 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../services/auth_service.dart';
-import '../services/appointment_service.dart';
 import '../models/user_model.dart';
 
 class DoctorAvailabilityScreen extends StatefulWidget {
   const DoctorAvailabilityScreen({super.key});
 
   @override
-  State<DoctorAvailabilityScreen> createState() => _DoctorAvailabilityScreenState();
+  State<DoctorAvailabilityScreen> createState() =>
+      _DoctorAvailabilityScreenState();
 }
 
 class _DoctorAvailabilityScreenState extends State<DoctorAvailabilityScreen> {
   final AuthService _authService = AuthService();
-  final AppointmentService _appointmentService = AppointmentService();
-  
+
   UserModel? _currentUser;
   DateTime _selectedDate = DateTime.now();
   List<String> _availableHours = [];
-  List<String> _allHours = [
-    '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
-    '11:00', '11:30', '12:00', '12:30', '13:00', '13:30',
-    '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
-    '17:00', '17:30', '18:00', '18:30', '19:00', '19:30',
-    '20:00'
+  final List<String> _allHours = [
+    '08:00',
+    '08:30',
+    '09:00',
+    '09:30',
+    '10:00',
+    '10:30',
+    '11:00',
+    '11:30',
+    '12:00',
+    '12:30',
+    '13:00',
+    '13:30',
+    '14:00',
+    '14:30',
+    '15:00',
+    '15:30',
+    '16:00',
+    '16:30',
+    '17:00',
+    '17:30',
+    '18:00',
+    '18:30',
+    '19:00',
+    '19:30',
+    '20:00',
   ];
   bool _isLoading = false;
 
@@ -44,7 +63,7 @@ class _DoctorAvailabilityScreenState extends State<DoctorAvailabilityScreen> {
 
   Future<void> _loadAvailability() async {
     if (_currentUser == null || _currentUser!.role != 'doctor') return;
-    
+
     setState(() {
       _isLoading = true;
     });
@@ -53,7 +72,7 @@ class _DoctorAvailabilityScreenState extends State<DoctorAvailabilityScreen> {
       // Simular carga de disponibilidad (en una implementación real,
       // esto vendría de una colección separada en Firestore)
       await Future.delayed(const Duration(seconds: 1));
-      
+
       // Por ahora, mostrar todas las horas como disponibles
       setState(() {
         _availableHours = List.from(_allHours);
@@ -92,7 +111,7 @@ class _DoctorAvailabilityScreenState extends State<DoctorAvailabilityScreen> {
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 30)),
     );
-    
+
     if (date != null) {
       setState(() {
         _selectedDate = date;
@@ -104,10 +123,7 @@ class _DoctorAvailabilityScreenState extends State<DoctorAvailabilityScreen> {
   void _showErrorSnackBar(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(message), backgroundColor: Colors.red),
       );
     }
   }
@@ -115,10 +131,7 @@ class _DoctorAvailabilityScreenState extends State<DoctorAvailabilityScreen> {
   void _showSuccessSnackBar(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.green,
-        ),
+        SnackBar(content: Text(message), backgroundColor: Colors.green),
       );
     }
   }
@@ -164,19 +177,19 @@ class _DoctorAvailabilityScreenState extends State<DoctorAvailabilityScreen> {
           children: [
             // Información del doctor
             _buildDoctorInfoCard(),
-            
+
             const SizedBox(height: 24),
-            
+
             // Selector de fecha
             _buildDateSelector(),
-            
+
             const SizedBox(height: 24),
-            
+
             // Horarios disponibles
             _buildAvailabilitySection(),
-            
+
             const SizedBox(height: 24),
-            
+
             // Resumen
             _buildSummaryCard(),
           ],
@@ -324,12 +337,17 @@ class _DoctorAvailabilityScreenState extends State<DoctorAvailabilityScreen> {
               return GestureDetector(
                 onTap: () => _toggleHourAvailability(hour),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: isAvailable ? const Color(0xFF48BB78) : Colors.white,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: isAvailable ? const Color(0xFF48BB78) : const Color(0xFFE2E8F0),
+                      color: isAvailable
+                          ? const Color(0xFF48BB78)
+                          : const Color(0xFFE2E8F0),
                     ),
                   ),
                   child: Text(
@@ -337,7 +355,9 @@ class _DoctorAvailabilityScreenState extends State<DoctorAvailabilityScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: isAvailable ? Colors.white : const Color(0xFF718096),
+                      color: isAvailable
+                          ? Colors.white
+                          : const Color(0xFF718096),
                     ),
                   ),
                 ),
@@ -430,7 +450,12 @@ class _DoctorAvailabilityScreenState extends State<DoctorAvailabilityScreen> {
     );
   }
 
-  Widget _buildSummaryItem(String label, String value, Color color, IconData icon) {
+  Widget _buildSummaryItem(
+    String label,
+    String value,
+    Color color,
+    IconData icon,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

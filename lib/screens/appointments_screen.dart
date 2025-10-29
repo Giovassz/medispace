@@ -17,7 +17,7 @@ class AppointmentsScreen extends StatefulWidget {
 class _AppointmentsScreenState extends State<AppointmentsScreen> {
   final AuthService _authService = AuthService();
   final AppointmentService _appointmentService = AppointmentService();
-  
+
   UserModel? _currentUser;
   List<AppointmentModel> _appointments = [];
   bool _isLoading = false;
@@ -31,45 +31,63 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
 
   Future<void> _loadUserData() async {
     final user = await _authService.getCurrentUserData();
-    setState(() {
-      _currentUser = user;
-    });
+    if (mounted) {
+      setState(() {
+        _currentUser = user;
+      });
+    }
     _loadAppointments();
   }
 
   Future<void> _loadAppointments() async {
     if (_currentUser == null) return;
-    
-    setState(() {
-      _isLoading = true;
-    });
+
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
 
     try {
       List<AppointmentModel> appointments;
       if (_currentUser!.role == 'doctor') {
-        appointments = await _appointmentService.getDoctorAppointments(_currentUser!.uid);
+        appointments = await _appointmentService.getDoctorAppointments(
+          _currentUser!.uid,
+        );
       } else {
-        appointments = await _appointmentService.getPatientAppointments(_currentUser!.uid);
+        appointments = await _appointmentService.getPatientAppointments(
+          _currentUser!.uid,
+        );
       }
-      
-      setState(() {
-        _appointments = appointments;
-      });
+
+      if (mounted) {
+        setState(() {
+          _appointments = appointments;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      _showErrorSnackBar('Error al cargar citas: $e');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      print('❌ Error al cargar citas: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        _showErrorSnackBar('Error al cargar citas');
+      }
     }
   }
 
   List<AppointmentModel> _getFilteredAppointments() {
     if (_selectedFilter == 'all') return _appointments;
-    return _appointments.where((appointment) => appointment.status == _selectedFilter).toList();
+    return _appointments
+        .where((appointment) => appointment.status == _selectedFilter)
+        .toList();
   }
 
-  Future<void> _updateAppointmentStatus(String appointmentId, String status) async {
+  Future<void> _updateAppointmentStatus(
+    String appointmentId,
+    String status,
+  ) async {
     try {
       await _appointmentService.updateAppointmentStatus(appointmentId, status);
       _loadAppointments();
@@ -94,10 +112,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(
-              'No',
-              style: GoogleFonts.poppins(color: Colors.grey),
-            ),
+            child: Text('No', style: GoogleFonts.poppins(color: Colors.grey)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
@@ -127,7 +142,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
         builder: (context) => EditAppointmentScreen(appointment: appointment),
       ),
     );
-    
+
     if (result == true) {
       _loadAppointments();
     }
@@ -136,10 +151,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
   void _showErrorSnackBar(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(message), backgroundColor: Colors.red),
       );
     }
   }
@@ -147,10 +159,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
   void _showSuccessSnackBar(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.green,
-        ),
+        SnackBar(content: Text(message), backgroundColor: Colors.green),
       );
     }
   }
@@ -188,11 +197,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
   @override
   Widget build(BuildContext context) {
     if (_currentUser == null) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final filteredAppointments = _getFilteredAppointments();
@@ -225,7 +230,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                 ],
               ),
             ),
-            
+
             // Filtros
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -246,9 +251,9 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 20),
-            
+
             // Lista de citas
             Expanded(
               child: filteredAppointments.isEmpty
@@ -301,7 +306,9 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
           color: isSelected ? const Color(0xFF667EEA) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? const Color(0xFF667EEA) : const Color(0xFFE2E8F0),
+            color: isSelected
+                ? const Color(0xFF667EEA)
+                : const Color(0xFFE2E8F0),
           ),
         ),
         child: Text(
@@ -339,7 +346,9 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _getAppointmentStatusColor(appointment.status).withValues(alpha: 0.1),
+                  color: _getAppointmentStatusColor(
+                    appointment.status,
+                  ).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -361,20 +370,22 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           Row(
             children: [
               Container(
                 width: 50,
                 height: 50,
-              decoration: BoxDecoration(
-                color: const Color(0xFF667EEA).withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF667EEA).withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
                 child: Icon(
-                  _currentUser!.role == 'doctor' ? Icons.person : Icons.medical_services,
+                  _currentUser!.role == 'doctor'
+                      ? Icons.person
+                      : Icons.medical_services,
                   color: const Color(0xFF667EEA),
                   size: 24,
                 ),
@@ -385,7 +396,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _currentUser!.role == 'doctor' 
+                      _currentUser!.role == 'doctor'
                           ? appointment.patientName
                           : 'Dr. ${appointment.doctorName}',
                       style: GoogleFonts.poppins(
@@ -417,7 +428,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               ),
             ],
           ),
-          
+
           if (appointment.reason != null) ...[
             const SizedBox(height: 16),
             Container(
@@ -450,7 +461,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               ),
             ),
           ],
-          
+
           if (appointment.notes != null) ...[
             const SizedBox(height: 12),
             Container(
@@ -483,9 +494,11 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               ),
             ),
           ],
-          
+
           // Acciones para pacientes
-          if (_currentUser!.role == 'patient' && appointment.status != 'cancelled' && appointment.status != 'completed') ...[
+          if (_currentUser!.role == 'patient' &&
+              appointment.status != 'cancelled' &&
+              appointment.status != 'completed') ...[
             const SizedBox(height: 16),
             Row(
               children: [
@@ -532,16 +545,19 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               ],
             ),
           ],
-          
+
           // Acciones para doctores
-          if (_currentUser!.role == 'doctor' && appointment.status != 'cancelled' && appointment.status != 'completed') ...[
+          if (_currentUser!.role == 'doctor' &&
+              appointment.status != 'cancelled' &&
+              appointment.status != 'completed') ...[
             const SizedBox(height: 16),
             Row(
               children: [
                 if (appointment.status == 'scheduled') ...[
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () => _updateAppointmentStatus(appointment.id, 'confirmed'),
+                      onPressed: () =>
+                          _updateAppointmentStatus(appointment.id, 'confirmed'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF48BB78),
                         shape: RoundedRectangleBorder(
@@ -563,7 +579,8 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                 if (appointment.status == 'confirmed') ...[
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () => _updateAppointmentStatus(appointment.id, 'completed'),
+                      onPressed: () =>
+                          _updateAppointmentStatus(appointment.id, 'completed'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF667EEA),
                         shape: RoundedRectangleBorder(
