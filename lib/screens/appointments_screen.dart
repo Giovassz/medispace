@@ -97,42 +97,50 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
     }
   }
 
-  Future<void> _cancelAppointment(String appointmentId) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Confirmar cancelación',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          '¿Estás seguro de que deseas cancelar esta cita?',
-          style: GoogleFonts.poppins(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text('No', style: GoogleFonts.poppins(color: Colors.grey)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              'Sí, cancelar',
-              style: GoogleFonts.poppins(color: Colors.red),
-            ),
-          ),
-        ],
-      ),
-    );
+  Future<void> _cancelAppointment(
+    String appointmentId, {
+    bool requireConfirmation = true,
+  }) async {
+    bool shouldProceed = true;
 
-    if (confirmed == true) {
-      try {
-        await _appointmentService.cancelAppointment(appointmentId);
-        _loadAppointments();
-        _showSuccessSnackBar('Cita cancelada');
-      } catch (e) {
-        _showErrorSnackBar('Error al cancelar cita: $e');
-      }
+    if (requireConfirmation) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            'Confirmar cancelación',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            '¿Estás seguro de que deseas cancelar esta cita?',
+            style: GoogleFonts.poppins(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('No', style: GoogleFonts.poppins(color: Colors.grey)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(
+                'Sí, cancelar',
+                style: GoogleFonts.poppins(color: Colors.red),
+              ),
+            ),
+          ],
+        ),
+      );
+      shouldProceed = confirmed == true;
+    }
+
+    if (!shouldProceed) return;
+
+    try {
+      await _appointmentService.cancelAppointment(appointmentId);
+      _loadAppointments();
+      _showSuccessSnackBar('Cita cancelada');
+    } catch (e) {
+      _showErrorSnackBar('Error al cancelar cita: $e');
     }
   }
 
@@ -277,13 +285,20 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                         ],
                       ),
                     )
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      itemCount: filteredAppointments.length,
-                      itemBuilder: (context, index) {
-                        final appointment = filteredAppointments[index];
-                        return _buildAppointmentCard(appointment);
-                      },
+                  : RefreshIndicator(
+                      color: const Color(0xFF667EEA),
+                      onRefresh: _loadAppointments,
+                      child: ListView.builder(
+                        physics: const BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics(),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        itemCount: filteredAppointments.length,
+                        itemBuilder: (context, index) {
+                          final appointment = filteredAppointments[index];
+                          return _buildAppointmentListItem(appointment);
+                        },
+                      ),
                     ),
             ),
           ],
@@ -320,6 +335,77 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildAppointmentListItem(AppointmentModel appointment) {
+    final bool canSwipeToCancel =
+        _currentUser!.role == 'patient' &&
+        appointment.status != 'cancelled' &&
+        appointment.status != 'completed';
+
+    if (!canSwipeToCancel) {
+      return _buildAppointmentCard(appointment);
+    }
+
+    return Dismissible(
+      key: ValueKey(appointment.id),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF0F0),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        alignment: Alignment.centerRight,
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(Icons.swipe, color: Color(0xFFE53E3E)),
+            SizedBox(width: 8),
+            Icon(Icons.delete_forever, color: Color(0xFFE53E3E)),
+          ],
+        ),
+      ),
+      confirmDismiss: (direction) async {
+        return await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(
+                  'Cancelar cita',
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                ),
+                content: Text(
+                  'Se notificará la cancelación al equipo médico. ¿Deseas continuar?',
+                  style: GoogleFonts.poppins(),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(
+                      'Mantener',
+                      style: GoogleFonts.poppins(color: Colors.grey),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text(
+                      'Cancelar cita',
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFE53E3E),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ) ??
+            false;
+      },
+      onDismissed: (direction) {
+        _cancelAppointment(appointment.id, requireConfirmation: false);
+      },
+      child: _buildAppointmentCard(appointment),
     );
   }
 

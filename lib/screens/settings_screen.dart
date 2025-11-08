@@ -6,6 +6,7 @@ import 'login_screen.dart';
 import 'edit_profile_screen.dart';
 import 'privacy_screen.dart';
 import 'about_screen.dart';
+import 'cupertino_showcase_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -238,6 +239,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const AboutScreen()),
+              );
+            },
+          ),
+
+          _buildDivider(),
+
+          _buildOptionTile(
+            Icons.phone_iphone,
+            'Experiencia iOS',
+            'Explora widgets Cupertino y su integración',
+            Icons.arrow_forward_ios,
+            () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CupertinoShowcaseScreen(),
+                ),
               );
             },
           ),
