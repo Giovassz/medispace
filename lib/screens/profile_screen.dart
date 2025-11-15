@@ -170,6 +170,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             'Miembro desde',
             _formatDate(_currentUser!.createdAt),
           ),
+          const SizedBox(height: 16),
+          _buildRoleSelector(),
         ],
       ),
     );
@@ -332,6 +334,80 @@ class _ProfileScreenState extends State<ProfileScreen> {
         size: 16,
       ),
       onTap: onTap,
+    );
+  }
+
+  Widget _buildRoleSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.person_outline, color: const Color(0xFF667EEA), size: 20),
+            const SizedBox(width: 12),
+            Text(
+              'Rol',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: const Color(0xFF718096),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: _currentUser!.role,
+              isExpanded: true,
+              items: const [
+                DropdownMenuItem<String>(
+                  value: 'patient',
+                  child: Text('Paciente'),
+                ),
+                DropdownMenuItem<String>(
+                  value: 'doctor',
+                  child: Text('Médico'),
+                ),
+              ],
+              onChanged: (value) async {
+                if (value != null && value != _currentUser!.role) {
+                  try {
+                    final updatedUser = _currentUser!.copyWith(role: value);
+                    await _authService.updateUserProfile(updatedUser);
+                    setState(() {
+                      _currentUser = updatedUser;
+                    });
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Rol actualizado a ${value == 'doctor' ? 'Médico' : 'Paciente'}'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error al actualizar rol: $e'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  }
+                }
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 

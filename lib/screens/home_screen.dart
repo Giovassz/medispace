@@ -4,6 +4,7 @@ import '../services/auth_service.dart';
 import '../models/user_model.dart';
 import '../models/specialty_model.dart';
 import 'book_appointment_screen.dart';
+import 'dashboard_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -114,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // Botón para agendar cita
         _buildServiceCard(
-          title: 'Agendar Cita',
+          title: 'Agregar Cita',
           subtitle: 'Reserva tu cita médica',
           icon: Icons.add_circle_outline,
           color: const Color(0xFF667EEA),
@@ -217,12 +218,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // Acciones rápidas
         _buildServiceCard(
-          title: 'Ver Mis Citas',
-          subtitle: 'Gestiona tu agenda',
-          icon: Icons.event_note,
+          title: 'Ver Citas',
+          subtitle: 'Dashboard con estadísticas',
+          icon: Icons.dashboard,
           color: const Color(0xFF48BB78),
           onTap: () {
-            // Navegar a la pantalla de citas del doctor
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const DashboardScreen(),
+              ),
+            );
           },
         ),
       ],

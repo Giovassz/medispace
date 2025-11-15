@@ -21,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = AuthService();
   bool _isLoading = false;
   bool _obscurePassword = true;
+  String _selectedRole = 'patient'; // Rol por defecto
 
   @override
   void dispose() {
@@ -124,6 +125,50 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                     return null;
                   },
+                ),
+                
+                const SizedBox(height: 20),
+                
+                // Selección de rol
+                Text(
+                  'Tipo de cuenta',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF2D3748),
+                  ),
+                ),
+                
+                const SizedBox(height: 12),
+                
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedRole,
+                      isExpanded: true,
+                      items: const [
+                        DropdownMenuItem<String>(
+                          value: 'patient',
+                          child: Text('Paciente'),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'doctor',
+                          child: Text('Médico'),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedRole = value ?? 'patient';
+                        });
+                      },
+                    ),
+                  ),
                 ),
                 
                 const SizedBox(height: 20),
