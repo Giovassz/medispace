@@ -11,15 +11,26 @@ import 'bloc/dashboard/dashboard_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  
+  try {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Crear perfiles de doctores por defecto
-  final authService = AuthService();
-  await authService.createDefaultDoctors();
+    // Crear perfiles de doctores por defecto (en background, no bloquea)
+    final authService = AuthService();
+    authService.createDefaultDoctors().catchError((e) {
+      // Ignorar errores de permisos, solo registrar
+      print('⚠️ No se pudieron crear doctores por defecto: $e');
+    });
 
-  // Crear citas de ejemplo
-  final appointmentService = AppointmentService();
-  await appointmentService.createSampleAppointments();
+    // Crear citas de ejemplo (en background, no bloquea)
+    final appointmentService = AppointmentService();
+    appointmentService.createSampleAppointments().catchError((e) {
+      // Ignorar errores de permisos, solo registrar
+      print('⚠️ No se pudieron crear citas de ejemplo: $e');
+    });
+  } catch (e) {
+    print('⚠️ Error al inicializar Firebase: $e');
+  }
 
   runApp(const MediSpaceApp());
 }

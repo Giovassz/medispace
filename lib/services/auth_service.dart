@@ -93,10 +93,15 @@ class AuthService {
           .doc(user.uid)
           .get();
 
-      if (doc.exists) {
+      if (doc.exists && doc.data() != null) {
         return UserModel.fromMap(doc.data() as Map<String, dynamic>);
       }
       return null;
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') {
+        throw 'Error de permisos: Verifica las reglas de seguridad de Firestore. El usuario debe tener permisos para leer su propio documento.';
+      }
+      throw 'Error al obtener datos del usuario: ${e.message}';
     } catch (e) {
       throw 'Error al obtener datos del usuario: $e';
     }

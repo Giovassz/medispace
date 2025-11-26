@@ -206,6 +206,27 @@ class AppointmentService {
     }
   }
 
+  // Obtener todas las citas (para estadísticas)
+  Future<List<AppointmentModel>> getAllAppointments() async {
+    try {
+      QuerySnapshot snapshot = await _firestore
+          .collection('appointments')
+          .get();
+
+      List<AppointmentModel> appointments = snapshot.docs
+          .map(
+            (doc) =>
+                AppointmentModel.fromMap(doc.data() as Map<String, dynamic>),
+          )
+          .toList();
+
+      return appointments;
+    } catch (e) {
+      print('❌ Error al obtener todas las citas: $e');
+      return [];
+    }
+  }
+
   // Crear citas de ejemplo
   Future<void> createSampleAppointments() async {
     try {
